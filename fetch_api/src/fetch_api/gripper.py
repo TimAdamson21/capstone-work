@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
-# TODO: import ?????????
-# TODO: import ???????_msgs.msg
+import actionlib
+import control_msgs.msg
 import rospy
 
 # TODO: ACTION_NAME = ???
@@ -23,6 +23,19 @@ class Gripper(object):
     def open(self):
         """Opens the gripper.
         """
+        goal = control_msgs.msg.GripperCommandGoal() #this is a message
+        goal.command.position = OPENED_POS             #setting the values on the message
+        goal.command.max_effort = 100
+        _ac = actionlib.SimpleActionClient('gripper_controller/gripper_action', control_msgs.msg.GripperCommandAction)
+        print("waiting for server")
+        _ac.wait_for_server()
+        _ac.send_goal(goal)
+        print("waiting to open")
+        _ac.wait_for_result()
+        print("success!")
+        return _ac.get_result()
+
+
         # TODO: Create goal
         # TODO: Send goal
         # TODO: Wait for result
@@ -35,6 +48,17 @@ class Gripper(object):
             max_effort: The maximum effort, in Newtons, to use. Note that this
                 should not be less than 35N, or else the gripper may not close.
         """
+        goal = control_msgs.msg.GripperCommandGoal()
+        goal.command.position = CLOSED_POS
+        goal.command.max_effort = max_effort
+        _ac = actionlib.SimpleActionClient('gripper_controller/gripper_action', control_msgs.msg.GripperCommandAction)
+        print("waiting for server")
+        _ac.wait_for_server()
+        _ac.send_goal(goal)
+        print("waiting")
+        _ac.wait_for_result()
+        print("success")
+        return _ac.get_result()
         # TODO: Create goal
         # TODO: Send goal
         # TODO: Wait for result

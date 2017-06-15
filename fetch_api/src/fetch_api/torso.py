@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
-# TODO: import ?????????
-# TODO: import ???????_msgs.msg
-# TODO: import ??????????_msgs.msg
+import actionlib
+import control_msgs.msg
+import trajectory_msgs.msg
 import rospy
+from pprint import pprint
 
-# TODO: ACTION_NAME = ???
-# TODO: JOINT_NAME = ???
+ACTION_NAME = "torso_controller/follow_joint_trajectory"
+JOINT_NAME = "torso_lift_joint"
 TIME_FROM_START = 5  # How many seconds it should take to set the torso height.
 
 
@@ -17,6 +18,10 @@ class Torso(object):
     MAX_HEIGHT = 0.4
 
     def __init__(self):
+        self._ac = actionlib.SimpleActionClient(ACTION_NAME, control_msgs.msg.FollowJointTrajectoryAction)
+        print("now waiting for server")
+        self._ac.wait_for_server()
+        print("successfully connected to server")
         # TODO: Create actionlib client
         # TODO: Wait for server
         pass
@@ -30,6 +35,19 @@ class Torso(object):
             height: The height, in meters, to set the torso to. Values range
                 from Torso.MIN_HEIGHT (0.0) to Torso.MAX_HEIGHT(0.4).
         """
+        if height >= Torso.MIN_HEIGHT and height <= Torso.MAX_HEIGHT:
+            point = trajectory_msgs.msg.JointTrajectoryPoint()
+            point.positions.append(height)
+            point.time_from_start.secs = TIME_FROM_START
+            goal = control_msgs.msg.FollowJointTrajectoryGoal()
+            pprint(goal)
+            goal.trajectory.joint_names.append(JOINT_NAME)
+            goal.trajectory.points.append(point)
+            self._ac.send_goal(goal)
+            print("waiting for result")
+            self._ac.wait_for_result()
+            print("successful result")
+            return self._ac.get_result()
         # TODO: Check that the height is between MIN_HEIGHT and MAX_HEIGHT.
         # TODO: Create a trajectory point
         # TODO: Set position of trajectory point
@@ -41,4 +59,7 @@ class Torso(object):
 
         # TODO: Send goal
         # TODO: Wait for result
-        rospy.logerr('Not implemented.')
+        
+        else:
+          rospy.logerr("Improper height set")
+        

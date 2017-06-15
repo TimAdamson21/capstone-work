@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import rospy
-
+import fetch_api
 
 def print_usage():
     print 'Moves the torso to a certain height between [0.0, 0.4]'
@@ -18,11 +18,13 @@ def wait_for_time():
 def main():
     rospy.init_node('torso_demo')
     wait_for_time()
+    torso = fetch_api.Torso() 
     argv = rospy.myargv()
     if len(argv) < 2:
         print_usage()
         return
     height = float(argv[1])
+    torso.set_height(height)
 
 
 if __name__ == '__main__':

@@ -31,9 +31,11 @@ def main():
         effort = float(argv[2])
 
     if command == 'open':
-        rospy.logerr('Not implemented.')
+        gripper.open()
+        #rospy.logerr('Not implemented.')
     elif command == 'close':
-        rospy.logerr('Not implemented.')
+        gripper.close(effort)
+        #rospy.logerr('Not implemented.')
     else:
         print_usage()
 

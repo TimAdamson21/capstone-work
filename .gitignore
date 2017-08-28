@@ -38,6 +38,8 @@ qtcreator-*
 /planning/docs
 /planning/src
 
+*.idea*
+
 *~
 
 # Emacs
@@ -45,5 +47,5 @@ qtcreator-*
 
 # Catkin custom files
 CATKIN_IGNORE
-
+*/cmake-build-debug/*
 

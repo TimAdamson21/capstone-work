@@ -61,5 +61,6 @@ class Torso(object):
         # TODO: Wait for result
         
         else:
+          print("Tried to set torso to " + height)
           rospy.logerr("Improper height set")
         
